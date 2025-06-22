@@ -23,13 +23,18 @@ class CityController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'country' => 'required|string|max:255',
-            'timezone' => 'required|string|max:255',
-            'temperature' => 'required|integer',
+            'timezone' => [
+                'required',
+                'string',
+                'max:255',
+                'in:' . implode(',', timezone_identifiers_list()),
+            ],
+            'temperature' => 'required|integer|min:-50|max:60',
         ]);
 
         City::create($request->all());
 
-        return redirect()->route('admin.cities.index')->with('success', 'City added!');
+        return redirect()->route('admin.cities.create')->with('success', 'City added!');
     }
 
     public function show(City $city)
@@ -47,8 +52,13 @@ class CityController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'country' => 'required|string|max:255',
-            'timezone' => 'required|string|max:255',
-            'temperature' => 'required|integer',
+            'timezone' => [
+                'required',
+                'string',
+                'max:255',
+                'in:' . implode(',', timezone_identifiers_list()),
+            ],
+            'temperature' => 'required|integer|min:-50|max:60',
         ]);
 
         $city->update($request->all());

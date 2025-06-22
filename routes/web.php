@@ -2,13 +2,20 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\WeatherController;
+use App\Http\Middleware\AdminCheckMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('welcome');
 
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('cities', CityController::class);
-});
+Route::middleware(['auth', AdminCheckMiddleware::class])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('cities', CityController::class);
+    });
+
+Route::get('/weather', [WeatherController::class, 'index'])->name('weather.index')->middleware('auth');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
